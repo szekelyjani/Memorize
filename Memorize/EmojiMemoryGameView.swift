@@ -10,6 +10,7 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     typealias Card = MemoryGame<String>.Card
     @ObservedObject var viewModel: EmojiMemoryGame
+    @State private var showSettings = false
     private let aspectRatio: CGFloat = 2/3
     private let spacing: CGFloat = 4
     private let dealAnimation: Animation = .easeInOut(duration: 1)
@@ -17,20 +18,51 @@ struct EmojiMemoryGameView: View {
     private let deckWidth: CGFloat = 50
     
     var body: some View {
-        VStack {
-            cards
-                .foregroundStyle(viewModel.color)
-            HStack {
-                score
-                Spacer()
-                deck
+        NavigationStack {
+            VStack {
+                cards
                     .foregroundStyle(viewModel.color)
-                Spacer()
-                shuffle
+                HStack {
+                    score
+                    Spacer()
+                    deck
+                        .foregroundStyle(viewModel.color)
+                    Spacer()
+                    shuffle
+                }
+                .font(.title)
             }
-            .font(.title)
+            .padding()
+            .navigationTitle("MemoryGame")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    restartButton
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+            }
         }
-        .padding()
+    }
+    
+    private var restartButton: some View {
+        Button {
+            withAnimation {
+                dealt.removeAll()
+                viewModel.restart()
+            }
+        } label: {
+            Image(systemName: "restart.circle")
+        }
     }
     
     private var score: some View {
