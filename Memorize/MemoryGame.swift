@@ -127,9 +127,3 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         }
     }
 }
-
-extension Array {
-    var only: Element? {
-        count == 1 ? first : nil
-    }
-}

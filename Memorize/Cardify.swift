@@ -40,9 +40,3 @@ struct Cardify: ViewModifier, Animatable {
         static let lineWidth: CGFloat = 2
     }
 }
-
-extension View {
-    func cardify(isFaceUp: Bool) -> some View {
-        modifier(Cardify(isFaceUp: isFaceUp))
-    }
-}

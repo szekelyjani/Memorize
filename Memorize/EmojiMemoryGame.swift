@@ -10,25 +10,17 @@ import SwiftUICore
 
 class EmojiMemoryGame: ObservableObject {
     typealias Card = MemoryGame<String>.Card
-    private static let emojis = ["👾", "🎃", "☠️", "👻", "🤠", "🫥", "💩", "👽", "💀", "🤖", "🐶","🐹"]
+    private(set) var theme: EmojiMemoryTheme
     
-    private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame(numberOfPairsOfCards: 12) { pairIndex in
-            if emojis.indices.contains(pairIndex) {
-                return emojis[pairIndex]
-            } else {
-                return "❌"
-            }
-        }
+    init(theme: EmojiMemoryTheme? = nil) {
+        self.theme = theme ?? EmojiMemoryTheme.themes.randomElement()!
+        let emoji = self.theme.emoji.shuffled()
+        game = MemoryGame(numberOfPairsOfCards: self.theme.numberOfPairs) { emoji[$0] }
     }
     
-    @Published private var game = createMemoryGame()
+    @Published private var game: MemoryGame<String>
     
     var cards: [Card] { game.cards }
-    
-    var color: Color {
-        .orange
-    }
     
     var score: Int {
         game.score
@@ -43,6 +35,8 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     func restart() {
-        game = EmojiMemoryGame.createMemoryGame()
+        let emoji = theme.emoji.shuffled()
+        let numberOfPairs = theme.numberOfPairs
+        game = MemoryGame(numberOfPairsOfCards: numberOfPairs) { emoji[$0] }
     }
 }

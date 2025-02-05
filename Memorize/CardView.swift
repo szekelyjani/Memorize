@@ -59,9 +59,3 @@ struct CardView: View {
         .padding()
         .foregroundStyle(.green)
 }
-
-extension Animation {
-    static func spin(duration: TimeInterval) -> Animation {
-        .linear(duration: duration)
-    }
-}

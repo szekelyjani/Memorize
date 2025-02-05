@@ -10,7 +10,6 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     typealias Card = MemoryGame<String>.Card
     @ObservedObject var viewModel: EmojiMemoryGame
-    @State private var showSettings = false
     private let aspectRatio: CGFloat = 2/3
     private let spacing: CGFloat = 4
     private let dealAnimation: Animation = .easeInOut(duration: 1)
@@ -21,35 +20,24 @@ struct EmojiMemoryGameView: View {
         NavigationStack {
             VStack {
                 cards
-                    .foregroundStyle(viewModel.color)
+                    .foregroundStyle(viewModel.theme.color)
                 HStack {
                     score
                     Spacer()
                     deck
-                        .foregroundStyle(viewModel.color)
+                        .foregroundStyle(viewModel.theme.color)
                     Spacer()
                     shuffle
                 }
                 .font(.title)
             }
             .padding()
-            .navigationTitle("MemoryGame")
+            .navigationTitle(viewModel.theme.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .topBarTrailing) {
                     restartButton
                 }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                }
-            }
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
             }
         }
     }
