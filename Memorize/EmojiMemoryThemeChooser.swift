@@ -10,6 +10,7 @@ import SwiftUI
 struct EmojiMemoryThemeChooser: View {
     @EnvironmentObject var store: EmojiMemoryThemeStore
     @State private var showEditor = false
+    @State var selectedTheme: EmojiMemoryTheme?
     
     var body: some View {
         NavigationStack {
@@ -24,14 +25,11 @@ struct EmojiMemoryThemeChooser: View {
                     }
                     .swipeActions(edge: .leading) {
                         Button {
-                            showEditor.toggle()
+                            selectedTheme = theme
                         } label: {
                             Image(systemName: "info.circle.fill")
                         }
                         .tint(.blue)
-                    }
-                    .sheet(isPresented: $showEditor) {
-                        EmojiMemoryThemeEditor(theme: theme)
                     }
                 }
                 .onDelete { indexSet in
@@ -39,7 +37,6 @@ struct EmojiMemoryThemeChooser: View {
                         store.themes.remove(atOffsets: indexSet)
                     }
                 }
-
             }
             .navigationTitle("MemoryGame")
             .navigationBarTitleDisplayMode(.inline)
@@ -50,6 +47,11 @@ struct EmojiMemoryThemeChooser: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                }
+            }
+            .sheet(item: $selectedTheme) { theme in
+                if let index = store.themes.firstIndex(of: theme) {
+                    EmojiMemoryThemeEditor(theme: $store.themes[index])
                 }
             }
         }

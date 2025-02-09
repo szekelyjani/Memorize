@@ -51,5 +51,5 @@ struct EmojiMemoryTheme: Codable, Identifiable {
                          colorRGB: UIColor.systemPink.rgb, numberOfPairs: 7),
     ]
 
-    static let template = EmojiMemoryTheme(name: "Untitled", emoji: ["😃", "👍🏻", "🌈", "❤️"], colorRGB: UIColor.systemGreen.rgb, numberOfPairs: 4)
+    static let template = EmojiMemoryTheme(name: "Preview Theme", emoji: ["😃", "👍🏻", "🌈", "❤️"], colorRGB: UIColor.systemGreen.rgb, numberOfPairs: 4)
 }

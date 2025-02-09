@@ -36,4 +36,11 @@ extension Color {
     init(_ rgb: UIColor.RGB) {
         self.init(UIColor(rgb))
     }
+    
+    func toRGB() -> UIColor.RGB {
+            let uiColor = UIColor(self)
+            var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+            uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return UIColor.RGB(red: red * 255, green: green * 255, blue: blue * 255, alpha: 1)
+        }
 }
