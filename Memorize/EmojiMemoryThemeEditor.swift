@@ -70,8 +70,13 @@ struct EmojiMemoryThemeEditor: View {
     }
     
     private var colorPicker: some View {
-        ColorPicker("Select Color", selection: $selectedColor)
-            .pickerStyle(.menu)
+        ColorPicker(selection: $selectedColor,
+                    supportsOpacity: false) {
+            Label("Select Color",
+                  systemImage: "paintpalette")
+            .symbolVariant(.fill)
+        }
+                    .pickerStyle(.menu)
     }
     
     private var numberOfPairsStepper: some View {
@@ -82,9 +87,9 @@ struct EmojiMemoryThemeEditor: View {
         TextField("Add Emojis Here", text: $emojiToAdd)
             .focused($focused, equals: .addEmoji)
             .font(emojiFont)
-            .onChange(of: emojiToAdd) { _, newValue in
-                if !tempTheme.emoji.contains(newValue) {
-                    tempTheme.emoji.append(newValue)
+            .onChange(of: emojiToAdd) { emoji in
+                if !tempTheme.emoji.contains(emoji) {
+                    tempTheme.emoji.append(emoji)
                 }
             }
     }

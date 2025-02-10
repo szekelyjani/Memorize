@@ -45,10 +45,4 @@ class EmojiMemoryThemeStore: ObservableObject {
     func addNewTheme() {
         themes.append(EmojiMemoryTheme.template)
     }
-    
-//    func remove(_ theme: EmojiMemoryTheme) {
-//        if let index = themes.firstIndex(of: theme) {
-//            themes.remove(at: index)
-//        }
-//    }
 }

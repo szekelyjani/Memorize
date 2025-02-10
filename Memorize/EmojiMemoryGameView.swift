@@ -15,6 +15,7 @@ struct EmojiMemoryGameView: View {
     private let dealAnimation: Animation = .easeInOut(duration: 1)
     private let dealInterval: TimeInterval = 0.15
     private let deckWidth: CGFloat = 50
+    @State private var gameOver = false
     
     var body: some View {
         NavigationStack {
@@ -39,6 +40,17 @@ struct EmojiMemoryGameView: View {
                     restartButton
                 }
             }
+            .alert("Game Over", isPresented: $gameOver, actions: {
+                Button("Restart") {
+                    withAnimation {
+                        dealt.removeAll()
+                        viewModel.restart()
+                    }
+                }
+                Button("Cancel", role: .cancel) { }
+            }, message: {
+                Text("Your score is: \(viewModel.score)")
+            })
         }
     }
     
@@ -73,7 +85,7 @@ struct EmojiMemoryGameView: View {
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                     .transition(.asymmetric(insertion: .identity, removal: .identity))
                     .padding(spacing)
-                    .overlay (FlyingNumber(number: scoreChange(causeBy: card)))
+//                    .overlay (FlyingNumber(number: scoreChange(causeBy: card)))
                     .zIndex(scoreChange(causeBy: card) != 0 ? 100 : 0)
                     .onTapGesture {
                         choose(card)
@@ -124,6 +136,8 @@ struct EmojiMemoryGameView: View {
             viewModel.choose(card)
             let scoreChange = viewModel.score - scoreBeforeChoosing
             lastScroreChange = (scoreChange, causeByCardId: card.id)
+            let unMatchedCards = viewModel.cards.filter({!$0.isMatched})
+            gameOver = unMatchedCards.isEmpty
         }
     }
     
