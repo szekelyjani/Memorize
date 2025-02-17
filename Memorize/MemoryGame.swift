@@ -75,8 +75,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             }
         }
         let id: String
-        
-        // MARK: - Bonus Time
         var bonusTimeLimit: TimeInterval = 6
         var lastFaceUpDate: Date?
         var pastFaceUpTime: TimeInterval = 0

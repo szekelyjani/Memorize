@@ -22,6 +22,12 @@ struct ThemeChooserRowView: View {
     }
 }
 
-//#Preview {
-//    ThemeChooserRowView(theme: EmojiMemoryTheme.themes.first!)
-//}
+#Preview {
+    struct PreviewView: View {
+        @State private var previewTheme = EmojiMemoryTheme.template
+        var body: some View {
+            ThemeChooserRowView(theme: $previewTheme)
+        }
+    }
+    return PreviewView()
+}

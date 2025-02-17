@@ -11,6 +11,8 @@ import SwiftUICore
 class EmojiMemoryGame: ObservableObject {
     typealias Card = MemoryGame<String>.Card
     private(set) var theme: EmojiMemoryTheme
+    @Published private var game: MemoryGame<String>
+    @Published private(set) var gameOver = false
     
     init(theme: EmojiMemoryTheme? = nil) {
         self.theme = theme ?? EmojiMemoryTheme.themes.randomElement()!
@@ -18,16 +20,15 @@ class EmojiMemoryGame: ObservableObject {
         game = MemoryGame(numberOfPairsOfCards: self.theme.numberOfPairs) { emoji[$0] }
     }
     
-    @Published private var game: MemoryGame<String>
-    
     var cards: [Card] { game.cards }
-    
     var score: Int {
         game.score
     }
     
     func choose(_ card: Card) {
         game.choose(card)
+        let unMatchedCards = cards.filter({!$0.isMatched})
+        gameOver = unMatchedCards.isEmpty
     }
     
     func shuffle() {
@@ -38,5 +39,6 @@ class EmojiMemoryGame: ObservableObject {
         let emoji = theme.emoji.shuffled()
         let numberOfPairs = theme.numberOfPairs
         game = MemoryGame(numberOfPairsOfCards: numberOfPairs) { emoji[$0] }
+        gameOver = false
     }
 }

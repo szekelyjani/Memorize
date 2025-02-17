@@ -15,20 +15,31 @@ struct EmojiMemoryGameView: View {
     private let dealAnimation: Animation = .easeInOut(duration: 1)
     private let dealInterval: TimeInterval = 0.15
     private let deckWidth: CGFloat = 50
-    @State private var gameOver = false
     
     var body: some View {
         NavigationStack {
             VStack {
-                cards
-                    .foregroundStyle(viewModel.theme.color)
+                if !viewModel.gameOver && dealt.isEmpty {
+                    Spacer().frame(height: 100)
+                    startGame
+                }
+                
+                if viewModel.gameOver {
+                    Spacer().frame(height: 100)
+                    gameOver
+                    Spacer()
+                }
+                
+                if !viewModel.gameOver {
+                    cards
+                }
+                
                 HStack {
                     score
                     Spacer()
                     deck
-                        .foregroundStyle(viewModel.theme.color)
                     Spacer()
-                    shuffle
+                    restartButton
                 }
                 .font(.title)
             }
@@ -36,22 +47,36 @@ struct EmojiMemoryGameView: View {
             .navigationTitle(viewModel.theme.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    restartButton
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    shuffleButton
                 }
             }
-            .alert("Game Over", isPresented: $gameOver, actions: {
-                Button("Restart") {
-                    withAnimation {
-                        dealt.removeAll()
-                        viewModel.restart()
-                    }
-                }
-                Button("Cancel", role: .cancel) { }
-            }, message: {
-                Text("Your score is: \(viewModel.score)")
-            })
         }
+        .tint(viewModel.theme.color)
+    }
+    
+    private var startGame: some View {
+        Text("Tap on the deck to start the game!")
+            .font(.system(size: 40))
+            .foregroundStyle(viewModel.theme.color)
+            .multilineTextAlignment(.center)
+    }
+    
+    private var gameOver: some View {
+        VStack(alignment: .center) {
+            Text("Game Over")
+            Text("Your final score is: \(viewModel.score)")
+            Button() {
+                withAnimation {
+                    dealt.removeAll()
+                    viewModel.restart()
+                }
+            } label: {
+                Text("Restart")
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .font(.largeTitle)
     }
     
     private var restartButton: some View {
@@ -61,21 +86,24 @@ struct EmojiMemoryGameView: View {
                 viewModel.restart()
             }
         } label: {
-            Image(systemName: "restart.circle")
+            Text("New Game")
+        }
+    }
+    
+    private var shuffleButton: some View {
+        Button {
+            withAnimation {
+                viewModel.shuffle()
+            }
+        } label: {
+            Image(systemName: "shuffle")
         }
     }
     
     private var score: some View {
         Text("Score: \(viewModel.score)")
             .animation(nil)
-    }
-    
-    private var shuffle: some View {
-        Button("Shuffle") {
-            withAnimation {
-                viewModel.shuffle()
-            }
-        }
+            .foregroundStyle(viewModel.theme.color)
     }
 
     private var cards: some View {
@@ -85,7 +113,6 @@ struct EmojiMemoryGameView: View {
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                     .transition(.asymmetric(insertion: .identity, removal: .identity))
                     .padding(spacing)
-//                    .overlay (FlyingNumber(number: scoreChange(causeBy: card)))
                     .zIndex(scoreChange(causeBy: card) != 0 ? 100 : 0)
                     .onTapGesture {
                         choose(card)
@@ -136,8 +163,6 @@ struct EmojiMemoryGameView: View {
             viewModel.choose(card)
             let scoreChange = viewModel.score - scoreBeforeChoosing
             lastScroreChange = (scoreChange, causeByCardId: card.id)
-            let unMatchedCards = viewModel.cards.filter({!$0.isMatched})
-            gameOver = unMatchedCards.isEmpty
         }
     }
     
