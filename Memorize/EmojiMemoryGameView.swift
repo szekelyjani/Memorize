@@ -63,9 +63,12 @@ struct EmojiMemoryGameView: View {
     }
     
     private var gameOver: some View {
-        VStack(alignment: .center) {
-            Text("Game Over")
-            Text("Your final score is: \(viewModel.score)")
+        VStack(alignment: .center, spacing: 32) {
+            Group {
+                Text("Game Over")
+                Text("Your final score is: \(viewModel.score)")
+            }
+            .foregroundStyle(viewModel.theme.color)
             Button() {
                 withAnimation {
                     dealt.removeAll()
